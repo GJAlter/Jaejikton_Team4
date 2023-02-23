@@ -1,6 +1,6 @@
 package com.example.jaejikton_team4.DTO
 
-class Question {
+class QuestionDTO {
 
     data class Question(
         var description: String,

@@ -1,6 +1,7 @@
 package com.example.jaejikton_team4.Controller
 
-import com.example.jaejikton_team4.DTO.Room
+import com.example.jaejikton_team4.DTO.RoomDTO
+import com.example.jaejikton_team4.Response
 import com.example.jaejikton_team4.Service.RoomService
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -14,7 +15,7 @@ class RoomController(
 ) {
 
     @PostMapping("/create")
-    fun createRoom(@RequestBody room: Room.Room) {
+    fun createRoom(@RequestBody room: RoomDTO.Room): Response {
         return roomService.createRoom(room)
     }
 
