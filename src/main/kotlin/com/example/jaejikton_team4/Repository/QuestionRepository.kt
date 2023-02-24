@@ -6,5 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface QuestionRepository: JpaRepository<Question, Int> {
 
+    fun countByRoom(room: Room): Int
     fun getAllByRoom(room: Room): List<Question>
 }

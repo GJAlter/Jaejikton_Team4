@@ -1,5 +1,6 @@
 package com.example.jaejikton_team4.Repository
 
+import com.example.jaejikton_team4.Entity.Question
 import com.example.jaejikton_team4.Entity.QuestionResult
 import com.example.jaejikton_team4.Entity.Room
 import com.example.jaejikton_team4.Entity.User
@@ -18,5 +19,6 @@ interface QuestionResultRepository: JpaRepository<QuestionResult, Int> {
 
     fun getAllByUserRoom(room: Room): List<QuestionResult>
     fun getAllByUser(user: User): List<QuestionResult>
+    fun getAllByQuestionAndAnswerAndUserNot(question: Question, answer: Int, user: User): List<QuestionResult>
 
 }

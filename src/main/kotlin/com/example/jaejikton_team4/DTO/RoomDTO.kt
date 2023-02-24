@@ -34,6 +34,7 @@ class RoomDTO {
         var code: String,
         var title: String,
         var name: String,
+        var questionCount: Int,
         var results: List<QuestionDTO.TotalResult>
     )
 

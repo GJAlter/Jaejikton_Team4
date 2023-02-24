@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory
 import org.springframework.stereotype.Service
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
 import kotlin.random.Random
 
@@ -164,20 +165,34 @@ class RoomService(
             questionTotalResultList.add(questionTotalResult)
         }
 
+        val similarMap = LinkedHashMap<String, Int>()
         val userAnswers = questionResultRepository.getAllByUser(user)
         for(userAnswer in userAnswers) {
-
+            val sameAnswers = questionResultRepository.getAllByQuestionAndAnswerAndUserNot(userAnswer.question, userAnswer.answer, user)
+            for(sameAnswer in sameAnswers) {
+                if(similarMap[sameAnswer.user.name] == null) {
+                    similarMap[sameAnswer.user.name] = 1
+                } else {
+                    similarMap[sameAnswer.user.name] = similarMap[sameAnswer.user.name]!!.plus(1)
+                }
+            }
         }
 
+        val sortedList = similarMap.toList().sortedBy { it.second }.reversed()
+        val sortedMap = LinkedHashMap<String, Int>()
+        for(sortedItem in sortedList) {
+            sortedMap[sortedItem.first] = sortedItem.second
+        }
 
         val totalResult = RoomDTO.TotalResult(
             code = code,
             title = room.title,
             name = name,
+            questionCount = questionRepository.countByRoom(room),
             results = questionTotalResultList
         )
 
-        return Response(ResponseStatus.OK, totalResult)
+        return Response(ResponseStatus.OK, mapOf("gameResult" to totalResult, "rank" to sortedMap))
     }
 
     private fun generateCode(): String {
