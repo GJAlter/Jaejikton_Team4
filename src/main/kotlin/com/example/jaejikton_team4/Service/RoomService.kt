@@ -109,6 +109,8 @@ class RoomService(
 
     fun getResult(name: String, code: String): Response {
         val room = roomRepository.findByCode(code)?: throw UnknownCodeException("해당 방을 찾을 수 없습니다.")
+        val user = userRepository.findByRoomAndName(room, name)?: throw UnknownUserException("사용자를 찾을 수 없습니다.")
+        val completedUserCount = questionResultRepository.countDistinctUserByUserRoom(room)
         if(room.openMinute != null) {
             val openTime = Calendar.getInstance().apply {
                 time = room.createdDatetime
@@ -120,20 +122,62 @@ class RoomService(
                 throw NotOpenResultException("결과 오픈 조건: ${dateFormatter.format(openTime.time)}")
             }
         } else {
-            val completedUserCount = questionResultRepository.countDistinctUserByUserRoom(room)
             if(room.maximum > completedUserCount) {
                 throw NotOpenResultException("결과 오픈 조건: ${room.maximum}명이 전부 완료(현재: ${completedUserCount}명 완료)")
             }
         }
 
-        val questionTotalResultList = ArrayList<QuestionDTO.TotalResult>()
+        val view1UserListMap = LinkedHashMap<Int, ArrayList<String>>()
+        val view2UserListMap = LinkedHashMap<Int, ArrayList<String>>()// ID, 사용자 이름 목록
         val questionResults = questionResultRepository.getAllByUserRoom(room)
         for(questionResult in questionResults) {
+            if(view1UserListMap[questionResult.question.id] == null) {
+                view1UserListMap[questionResult.question.id] = ArrayList<String>()
+            }
+            if(view2UserListMap[questionResult.question.id] == null) {
+                view2UserListMap[questionResult.question.id] = ArrayList<String>()
+            }
 
+            if(questionResult.answer == 1) {
+                view1UserListMap[questionResult.question.id]!!.add(questionResult.user.name)
+            } else {
+                view2UserListMap[questionResult.question.id]!!.add(questionResult.user.name)
+            }
+        }
+
+        val questionTotalResultList = ArrayList<QuestionDTO.TotalResult>()
+
+        for(questionId in view1UserListMap.keys) {
+            val question = questionRepository.findById(questionId).get()
+            val view1 = view1UserListMap[questionId]
+            val view2 = view2UserListMap[questionId]
+            val questionTotalResult = QuestionDTO.TotalResult(
+                id = questionId,
+                view1 = question.view1,
+                view2 = question.view2,
+                view1Percentage = (100.0 / completedUserCount) * view1!!.size,
+                view2Percentage = (100.0 / completedUserCount) * view2!!.size,
+                view1Users = view1,
+                view2Users = view2
+            )
+
+            questionTotalResultList.add(questionTotalResult)
+        }
+
+        val userAnswers = questionResultRepository.getAllByUser(user)
+        for(userAnswer in userAnswers) {
 
         }
 
-        return Response(ResponseStatus.OK)
+
+        val totalResult = RoomDTO.TotalResult(
+            code = code,
+            title = room.title,
+            name = name,
+            results = questionTotalResultList
+        )
+
+        return Response(ResponseStatus.OK, totalResult)
     }
 
     private fun generateCode(): String {
