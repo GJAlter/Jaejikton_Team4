@@ -65,10 +65,10 @@ class RoomService(
     fun enterRoom(connect: RoomDTO.Connect): Response {
         val room = roomRepository.findByCode(connect.code) ?: throw UnknownCodeException("해당 방을 찾을 수 없습니다.")
         val questions = questionRepository.getAllByRoom(room)
-        val duplicateUserCount = userRepository.countByRoomIdAndNameRegex(room.id, "^${connect.name}_[0-9]|^${connect.name}$")
+        val duplicateUserCount = userRepository.countByRoomIdAndNameRegex(room.id, "^${connect.name}[0-9]|^${connect.name}$")
 
         if(duplicateUserCount > 0) {
-            connect.name = "${connect.name}_${duplicateUserCount + 1}"
+            connect.name = "${connect.name}${duplicateUserCount + 1}"
         }
 
         val objMapper = ObjectMapper().apply {
