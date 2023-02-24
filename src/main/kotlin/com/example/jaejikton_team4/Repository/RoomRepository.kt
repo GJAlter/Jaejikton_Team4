@@ -7,4 +7,6 @@ interface RoomRepository: JpaRepository<Room, Int> {
 
     fun existsByCode(code: String): Boolean
 
+    fun findByCode(code: String): Room?
+
 }
