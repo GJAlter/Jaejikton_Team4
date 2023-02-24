@@ -30,4 +30,11 @@ class RoomDTO {
         var results: List<QuestionDTO.Result>
     )
 
+    data class TotalResult(
+        var code: String,
+        var title: String,
+        var name: String,
+        var results: List<QuestionDTO.TotalResult>
+    )
+
 }

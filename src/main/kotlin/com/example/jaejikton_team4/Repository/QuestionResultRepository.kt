@@ -15,4 +15,6 @@ interface QuestionResultRepository: JpaRepository<QuestionResult, Int> {
     )
     fun countDistinctUserByUserRoom(@Param("room") room: Room): Int
 
+    fun getAllByUserRoom(room: Room): List<QuestionResult>
+
 }

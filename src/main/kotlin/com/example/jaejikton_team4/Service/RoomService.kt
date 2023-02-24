@@ -21,8 +21,8 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.type.TypeFactory
 import org.springframework.stereotype.Service
 import java.text.SimpleDateFormat
-import java.time.OffsetDateTime
 import java.util.*
+import kotlin.collections.LinkedHashMap
 import kotlin.random.Random
 
 @Service
@@ -126,7 +126,12 @@ class RoomService(
             }
         }
 
+        val questionTotalResultList = ArrayList<QuestionDTO.TotalResult>()
+        val questionResults = questionResultRepository.getAllByUserRoom(room)
+        for(questionResult in questionResults) {
 
+
+        }
 
         return Response(ResponseStatus.OK)
     }
