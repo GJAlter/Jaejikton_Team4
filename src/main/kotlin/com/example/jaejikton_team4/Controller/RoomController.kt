@@ -26,4 +26,16 @@ class RoomController(
         return roomService.enterRoom(connect)
     }
 
+    @PostMapping("/complete")
+    fun completed(@RequestBody result: RoomDTO.Result): Response {
+        return roomService.completed(result)
+    }
+
+    @GetMapping("/result")
+    fun getResult(
+        @RequestParam("name") name: String,
+        @RequestParam("code") code: String): Response {
+        return roomService.getResult(name, code)
+    }
+
 }

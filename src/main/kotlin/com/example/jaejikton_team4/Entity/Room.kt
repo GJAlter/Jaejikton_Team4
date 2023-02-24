@@ -1,5 +1,6 @@
 package com.example.jaejikton_team4.Entity
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import jakarta.persistence.*
 import java.util.*
 
@@ -16,6 +17,7 @@ class Room(
    var openMinute: Int? = null,
    @Column(name = "code")
    var code: String,
+//   @JsonFormat(timezone = "Asia/Seoul")
    @Column(name = "created_datetime")
    var createdDatetime: Date = Date()
 ) {

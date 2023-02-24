@@ -1,5 +1,7 @@
 package com.example.jaejikton_team4.DTO
 
+import com.example.jaejikton_team4.Entity.Question
+
 class RoomDTO {
 
     data class Room(
@@ -18,7 +20,14 @@ class RoomDTO {
     data class Info(
         var title: String,
         var name: String,
-        var questions: List<QuestionDTO.Question>
+        var code: String,
+        var questions: List<Question>
+    )
+
+    data class Result(
+        var code: String,
+        var name: String,
+        var results: List<QuestionDTO.Result>
     )
 
 }
