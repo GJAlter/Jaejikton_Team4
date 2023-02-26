@@ -179,9 +179,13 @@ class RoomService(
         }
 
         val sortedList = similarMap.toList().sortedBy { it.second }.reversed()
-        val sortedMap = LinkedHashMap<String, Int>()
+
+        val rankMap = ArrayList<LinkedHashMap<String, Any>>()
         for(sortedItem in sortedList) {
-            sortedMap[sortedItem.first] = sortedItem.second
+            val sortedMap = LinkedHashMap<String, Any>()
+            sortedMap["name"] = sortedItem.first
+            sortedMap["same"] = sortedItem.second
+            rankMap.add(sortedMap)
         }
 
         val totalResult = RoomDTO.TotalResult(
@@ -192,7 +196,7 @@ class RoomService(
             results = questionTotalResultList
         )
 
-        return Response(ResponseStatus.OK, mapOf("gameResult" to totalResult, "rank" to sortedMap))
+        return Response(ResponseStatus.OK, mapOf("gameResult" to totalResult, "rank" to rankMap))
     }
 
     private fun generateCode(): String {
