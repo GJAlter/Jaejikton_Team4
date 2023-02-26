@@ -8,6 +8,6 @@ Service: REST API Server
 
 Language: Kotlin 
 
-Framework: Spring Bott
+Framework: Spring Boot
 
 DB: MariaDB(JPA)
