@@ -20,5 +20,6 @@ interface QuestionResultRepository: JpaRepository<QuestionResult, Int> {
     fun getAllByUserRoom(room: Room): List<QuestionResult>
     fun getAllByUser(user: User): List<QuestionResult>
     fun getAllByQuestionAndAnswerAndUserNot(question: Question, answer: Int, user: User): List<QuestionResult>
+    fun getAllByQuestionRoomAndUserNameNotIn(room: Room, user: List<String>): List<QuestionResult>
 
 }

@@ -178,6 +178,7 @@ class RoomService(
             }
         }
 
+
         val sortedList = similarMap.toList().sortedBy { it.second }.reversed()
 
         val rankMap = ArrayList<LinkedHashMap<String, Any>>()
@@ -186,6 +187,32 @@ class RoomService(
             sortedMap["name"] = sortedItem.first
             sortedMap["same"] = sortedItem.second
             rankMap.add(sortedMap)
+        }
+
+        val notSameNameList = ArrayList<String>()
+        for(i in similarMap.keys) {
+            notSameNameList.add(i)
+        }
+        notSameNameList.add(user.name)
+        val notSameMap = questionResultRepository.getAllByQuestionRoomAndUserNameNotIn(room, notSameNameList)
+        val setList = ArrayList<LinkedHashMap<String, Any>>()
+
+        for(i in notSameMap) {
+            val notMap = LinkedHashMap<String, Any>()
+            notMap["name"] = i.user.name
+            notMap["same"] = 0
+            setList.add(
+                notMap
+            )
+        }
+
+        val setList2 = setList.toMutableSet()
+
+        for(i in setList2) {
+            val notMap = LinkedHashMap<String, Any>()
+                notMap["name"] = i["name"]!!
+                notMap["same"] = 0
+                rankMap.add(notMap)
         }
 
         val totalResult = RoomDTO.TotalResult(
